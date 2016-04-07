@@ -36,11 +36,12 @@
     ];
 
     /* ctrl */
-    MainController.$inject = ['$interval', '$scope', 'fuelTypes', 'fireKeepers'];
-    function MainController($interval, $scope, fuelTypes, fireKeepers){
+    MainController.$inject = ['$interval', '$mdDialog'];
+    function MainController($interval, $mdDialog){
         this.loadPeriod = 40;
         this.refreshInterval = 1000;
         this.$interval = $interval;
+        this.$mdDialog = $mdDialog;
         this.selectedKeeper = fireKeepers[1];
         this.fireKeepers = fireKeepers;
         this.selectedFuel = fuelTypes[2];
@@ -58,16 +59,18 @@
         };
         this.nextLoad.percentsLeft = this.getPercents();
         this.isStarted = true;
+        //TODO: use timeout for promises
         this.interval = this.$interval(this.updateTimer.bind(this), this.refreshInterval);
     };
 
     MainController.prototype.updateTimer = function(){
+        var that = this;
         if(this.nextLoad.timeLeft <= 0){
             this.loadsMade++;
             this.notifyFireKeeper();
-            this.nextLoad.loadPeriod = this.loadPeriod * 60 * 1000;
-            this.nextLoad.timeLeft = this.nextLoad.loadPeriod;
-            this.nextLoad.percentsLeft = this.getPercents();
+                that.nextLoad.loadPeriod = that.loadPeriod * 60 * 1000;
+                that.nextLoad.timeLeft = that.nextLoad.loadPeriod;
+                that.nextLoad.percentsLeft = that.getPercents();
         } else {
             this.nextLoad.timeLeft -= this.refreshInterval;
             this.nextLoad.percentsLeft = this.getPercents();
@@ -89,7 +92,23 @@
     };
 
     MainController.prototype.notifyFireKeeper = function () {
-        
+        var audio = new Audio('./assets/bells.mp3');
+        var alert = this.$mdDialog.alert({
+            title: 'Time to load!',
+            textContent: 'Fire needs you!',
+            ok: 'Loaded',
+            onShowing: function(){
+                audio.play();
+            },
+            onRemoving: function(){
+                audio.pause();
+                audio.currentTime = 0;
+            }
+        });
+
+        return this.$mdDialog
+            .show( alert );
+
     };
     
     MainController.prototype.stop = function(){
