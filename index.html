@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fire Keeper</title>
+
+    <link rel="stylesheet" href="./node_modules/angular-material/angular-material.min.css">
+    <link rel="stylesheet" href="./styles.css">
+
+    <script src="./node_modules/angular/angular.js"></script>
+    <script src="./node_modules/angular-animate/angular-animate.js"></script>
+    <script src="./node_modules/angular-aria/angular-aria.js"></script>
+    <script src="./node_modules/angular-material/angular-material.js"></script>
+    <script src="./app/app.js"></script>
+</head>
+<body ng-app="boiler-duty" ng-controller="main as main">
+<div layout="row" layout-align="center center" class="container">
+    <div class="white md-padding">
+        <md-input-container>
+            <label>Load period(minutes)</label>
+            <input type="text" ng-model="main.loadPeriod">
+        </md-input-container>
+        <md-button ng-click="main.start()" ng-if="!main.isStarted">Start</md-button>
+        <md-button ng-click="main.stop()" ng-if="main.isStarted">Stop</md-button>
+        <md-button ng-click="main.makeLoad()" ng-if="main.isStarted">Make load</md-button>
+        <span ng-if="main.isStarted">Time left: {{main.nextLoad.timeLeft|time}}</span><br/>
+        <span ng-if="main.isStarted">Percents left: {{main.nextLoad.percentsLeft}}%</span>
+        <span ng-if="main.isStarted">Loads made: {{main.loadsMade}}</span>
+        <md-progress-linear ng-if="main.isStarted" md-mode="determinate" value="{{main.nextLoad.percentsLeft}}"></md-progress-linear>
+    </div>
+</div>
+</body>
+</html>

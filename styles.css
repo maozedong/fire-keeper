@@ -1,0 +1,10 @@
+body{
+    background-image: url("./assets/calcifer.gif");
+    background-size: cover;
+}
+.container{
+    height: 100%;
+}
+.white{
+    background: rgba(255, 255, 255, 0.3);
+}
