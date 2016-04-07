@@ -15,19 +15,27 @@
 </head>
 <body ng-app="boiler-duty" ng-controller="main as main">
 <div layout="row" layout-align="center center" class="container">
-    <div class="white md-padding">
-        <md-input-container>
-            <label>Load period(minutes)</label>
-            <input type="text" ng-model="main.loadPeriod">
-        </md-input-container>
-        <md-button ng-click="main.start()" ng-if="!main.isStarted">Start</md-button>
-        <md-button ng-click="main.stop()" ng-if="main.isStarted">Stop</md-button>
-        <md-button ng-click="main.makeLoad()" ng-if="main.isStarted">Make load</md-button>
-        <span ng-if="main.isStarted">Time left: {{main.nextLoad.timeLeft|time}}</span><br/>
-        <span ng-if="main.isStarted">Percents left: {{main.nextLoad.percentsLeft}}%</span>
-        <span ng-if="main.isStarted">Loads made: {{main.loadsMade}}</span>
-        <md-progress-linear ng-if="main.isStarted" md-mode="determinate" value="{{main.nextLoad.percentsLeft}}"></md-progress-linear>
-    </div>
+    <diw class="white md-padding">
+        <div layout="column" class="fade " ng-if="!main.isStarted">
+            <md-input-container class="hue-dark  load-period">
+                <label class="hue-dark ">Load period(minutes)</label>
+                <input type="text" ng-model="main.loadPeriod">
+            </md-input-container>
+            <div layout="row" layout-align="end center ">
+                <md-button class="md-primary last-btn start-btn md-raised" ng-click="main.start()">Start</md-button>
+            </div>
+        </div>
+        <div class="fade" ng-if="main.isStarted">
+            <div class=" time-left">Time left: {{main.nextLoad.timeLeft|time}}</div>
+            <span>Percents left: {{main.nextLoad.percentsLeft}}%</span>
+            <span class="loads-made">Loads made: {{main.loadsMade}}</span>
+            <md-progress-linear md-mode="determinate" value="{{main.nextLoad.percentsLeft}}"></md-progress-linear>
+            <div layout="row" class=" buttons-block" layout-align="end center ">
+                <md-button class="md-primary md-raised" ng-click="main.stop()">Stop</md-button>
+                <md-button class="md-primary last-btn md-raised" ng-click="main.makeLoad()">Make load</md-button>
+            </div>
+        </div>
+    </diw>
 </div>
 </body>
 </html>

@@ -1,16 +1,16 @@
-(function(){
+(function () {
 
     /* fuel types */
     var fuelTypes = [
         {
             id: 1,
             name: 'briquets',
-            burningDuration: 1*60*60 //1 hour
+            burningDuration: 1 * 60 * 60 //1 hour
         },
         {
             id: 1,
             name: 'firewood',
-            burningDuration: 40*60 //40 minutes
+            burningDuration: 40 * 60 //40 minutes
         },
         {
             id: 2,
@@ -18,7 +18,7 @@
             burningDuration: 30 //30 seconds
         }
     ];
-    
+
     /* fire keepers list */
     var fireKeepers = [
         {
@@ -37,7 +37,7 @@
 
     /* ctrl */
     MainController.$inject = ['$interval', '$mdDialog'];
-    function MainController($interval, $mdDialog){
+    function MainController($interval, $mdDialog) {
         this.loadPeriod = 40;
         this.refreshInterval = 1000;
         this.$interval = $interval;
@@ -63,21 +63,21 @@
         this.interval = this.$interval(this.updateTimer.bind(this), this.refreshInterval);
     };
 
-    MainController.prototype.updateTimer = function(){
+    MainController.prototype.updateTimer = function () {
         var that = this;
-        if(this.nextLoad.timeLeft <= 0){
+        if (this.nextLoad.timeLeft <= 0) {
             this.loadsMade++;
             this.notifyFireKeeper();
-                that.nextLoad.loadPeriod = that.loadPeriod * 60 * 1000;
-                that.nextLoad.timeLeft = that.nextLoad.loadPeriod;
-                that.nextLoad.percentsLeft = that.getPercents();
+            that.nextLoad.loadPeriod = that.loadPeriod * 60 * 1000;
+            that.nextLoad.timeLeft = that.nextLoad.loadPeriod;
+            that.nextLoad.percentsLeft = that.getPercents();
         } else {
             this.nextLoad.timeLeft -= this.refreshInterval;
             this.nextLoad.percentsLeft = this.getPercents();
         }
     };
 
-    MainController.prototype.makeLoad = function(){
+    MainController.prototype.makeLoad = function () {
         var loadPeriodMs = this.loadPeriod * 60 * 1000;
         this.$interval.cancel(this.interval);
         this.loadsMade++;
@@ -88,7 +88,7 @@
     };
 
     MainController.prototype.getPercents = function () {
-        return Math.ceil( (this.nextLoad.timeLeft * 100) / (this.nextLoad.loadPeriod) );
+        return Math.ceil((this.nextLoad.timeLeft * 100) / (this.nextLoad.loadPeriod));
     };
 
     MainController.prototype.notifyFireKeeper = function () {
@@ -97,31 +97,45 @@
             title: 'Time to load!',
             textContent: 'Fire needs you!',
             ok: 'Loaded',
-            onShowing: function(){
+            onShowing: function () {
                 audio.play();
             },
-            onRemoving: function(){
+            onRemoving: function () {
                 audio.pause();
                 audio.currentTime = 0;
             }
         });
 
         return this.$mdDialog
-            .show( alert );
+            .show(alert);
 
     };
-    
-    MainController.prototype.stop = function(){
-        var message = "Brave Fire Keeper, you've made " + this.loadsMade + " loads! Neighbours are celebrating!";
+
+    MainController.prototype.stop = function () {
+        var loads = this.loadsMade;
         this.$interval.cancel(this.interval);
         this.isStarted = false;
         this.loadsMade = 0;
-        alert(message);
+
+        return this.$mdDialog
+            .show({
+                controller: function DialogController($scope, $mdDialog) {
+                    $scope.closeDialog = function () {
+                        $mdDialog.hide();
+                    }
+                    $scope.loadsMade = loads;
+                },
+                templateUrl: "app/alert.tmpl.html",
+                parent: angular.element(document.body),
+                clickOutsideToClose: true,
+            }).finally(function () {
+                this.isStarted = false;
+            });
     };
 
-    MainController.prototype.reportLoad = function(){
+    MainController.prototype.reportLoad = function () {
         this.session.loadsCount++;
-        this.nextLoad.date = new Date((new Date()).getTime() + this.selectedFuel.burningDuration*1000);
+        this.nextLoad.date = new Date((new Date()).getTime() + this.selectedFuel.burningDuration * 1000);
     };
 
     /* declarations */
@@ -134,12 +148,19 @@
                 function z(n) {
                     return (n < 10 ? '0' : '') + n;
                 }
+
                 var inputInSec = input / 1000;
                 var seconds = inputInSec % 60;
                 var minutes = Math.floor(inputInSec % 3600 / 60);
                 var hours = Math.floor(inputInSec / 3600);
                 return (z(hours) + ':' + z(minutes) + ':' + z(seconds));
             }
-        });
-    
+        }).config(function ($mdThemingProvider) {
+        $mdThemingProvider.theme('default')
+            .primaryPalette('grey', {
+                'default': '900', // by default use shade 400 from the pink palette for primary intentions
+            })
+
+    });
+
 })();
