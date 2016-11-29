@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <title>Fire Keeper</title>
 
-    <link rel="stylesheet" href="./node_modules/angular-material/angular-material.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.7/angular-material.min.css">
     <link rel="stylesheet" href="./styles.css">
 
-    <script src="./node_modules/angular/angular.js"></script>
-    <script src="./node_modules/angular-animate/angular-animate.js"></script>
-    <script src="./node_modules/angular-aria/angular-aria.js"></script>
-    <script src="./node_modules/angular-material/angular-material.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-animate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-aria.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.7/angular-material.min.js"></script>
     <script src="./app/app.js"></script>
 </head>
 <body ng-app="boiler-duty" ng-controller="main as main">
@@ -34,6 +34,7 @@
                 <md-button class="md-primary md-raised" ng-click="main.stop()">Stop</md-button>
                 <md-button class="md-primary last-btn md-raised" ng-click="main.makeLoad()">Make load</md-button>
             </div>
+            <div>Loads made: <span ng-bind="main.loadsMade"></span></div>
         </div>
     </diw>
 </div>
